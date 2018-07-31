@@ -41,27 +41,34 @@ module Api
         print("\nValidation: ")
         print(credit_card.validate)
 
-        if credit_card.validate
+        if credit_card.valid?
           gateway = ActiveMerchant::Billing::BacGateway.new(
            :keyid  => Settings.keyid,
            :hashkey => Settings.hashkey
           )
           print("Tarjeta Valida")
-        end
-        response = gateway.purchase(payment_params[:amount], credit_card, options)
-        #put(@payment)
-        #print(response)
-        #response_params = response.params.serialize
-        #print(response_params[:orderid])
-        @payment_response = PaymentResponse.new(response.params)
 
-         if @payment.save && @payment_response.save
-          #render json: @payment, status: :created#, location: @payment
-          #render json: @payment_response, status: :created#, location: @payment
-          render json: response, status: :created
-         else
-        #  render json: @payment.errors, status: :unprocessable_entity
-         end
+          response = gateway.purchase(payment_params[:amount], credit_card, options)
+          #put(@payment)
+          #print(response)
+          #response_params = response.params.serialize
+          #print(response_params[:orderid])
+          @payment_response = PaymentResponse.new(response.params)
+
+           if @payment.save && @payment_response.save
+            #render json: @payment, status: :created#, location: @payment
+            #render json: @payment_response, status: :created#, location: @payment
+            render json: response, status: :created
+           else
+          #  render json: @payment.errors, status: :unprocessable_entity
+           end
+
+        else
+          print("Tarjeta Invalida")
+          #@request_error[:status] = "Tarjeta Invalida"
+          render json: credit_card.validate
+        end
+        
       end
 
       # PATCH/PUT /payments/1
