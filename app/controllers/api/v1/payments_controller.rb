@@ -38,15 +38,15 @@ module Api
         }
         @payment[:ccNumber] = credit_card.display_number
 
-        print("\nValidation: ")
-        print(credit_card.validate)
+        #print("\nValidation: ")
+        #print(credit_card.validate)
 
         if credit_card.valid?
           gateway = ActiveMerchant::Billing::BacGateway.new(
            :keyid  => Settings.keyid,
            :hashkey => Settings.hashkey
           )
-          print("Tarjeta Valida")
+          #print("Tarjeta Valida")
 
           response = gateway.purchase(payment_params[:amount], credit_card, options)
           #put(@payment)
@@ -64,9 +64,9 @@ module Api
            end
 
         else
-          print("Tarjeta Invalida")
+          #print("Tarjeta Invalida")
           #@request_error[:status] = "Tarjeta Invalida"
-          render json: credit_card.validate
+          render json: credit_card.validate, status: :non_authoritative_information
         end
         
       end
