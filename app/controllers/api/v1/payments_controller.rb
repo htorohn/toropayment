@@ -4,6 +4,7 @@ module Api
     require 'active_merchant'
 
     class PaymentsController < ApplicationController
+      before_action :restrict_access
       before_action :set_payment, only: [:show, :update, :destroy]
 
       # GET /payments
@@ -94,6 +95,12 @@ module Api
         # Only allow a trusted parameter "white list" through.
         def payment_params
           params.require(:payment).permit(:order_id, :ccNumber, :ccMonth, :ccYear, :cvv, :billingAddress, :description, :email, :amount, :first_name, :last_name)
+        end
+
+        #Validacion de token
+        def restrict_access
+          api_key = ApiKey.find_by_access_token(request.headers['HTTP_API_KEY'])#params[:access_token])
+          head :unauthorized unless api_key
         end
     end
   end

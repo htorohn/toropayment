@@ -64,7 +64,12 @@ class InputForm extends Component {
         }  
         console.log('Payment: ')
         console.log(payment)
-        axios.post('/api/v1/payments', payment)
+        
+        axios.post('/api/v1/payments', payment, {
+            headers: {
+                api_key: 'cd6893c2c2a695f0bb0633de933ec085'
+            }
+        })
           .then(function (response) {
             console.log(response.data);
           })
